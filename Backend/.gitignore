@@ -1,0 +1,48 @@
+# =========================
+# Python / Django
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+
+# =========================
+# Entorno virtual
+# =========================
+venv/
+env/
+.venv/
+
+# =========================
+# Variables de entorno
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Django
+# =========================
+db.sqlite3
+staticfiles/
+media/
+
+# Migraciones compiladas
+*/migrations/__pycache__/
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# =========================
+# Sistema operativo
+# =========================
+.DS_Store
+Thumbs.db
