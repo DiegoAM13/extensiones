@@ -8,77 +8,53 @@
         <h1 class="ext-header__title">Extensiones</h1>
         <p class="ext-header__sub">{{ extensiones.length }} registros</p>
       </div>
+
+      <!-- BOTÓN EXPORTAR -->
+      <div class="ext-header__actions">
+        <q-btn color="green" icon="download" label="Exportar" :loading="loading" @click="exportar" unelevated />
+      </div>
+
     </div>
+
+
 
     <!-- FILTROS -->
     <div class="ext-filters">
 
+
       <!-- TIPO ARRIBA CENTRADO -->
       <div class="ext-filters__top">
-        <q-btn-toggle
-          v-model="filtros.tipo"
-          toggle-color="primary"
-          unelevated
-          rounded
-          dense
-          :options="[
-            { label: 'Todos', value: null },
-            { label: 'Operación', value: 'Operación' },
-            { label: 'Administrativa', value: 'Administrativa' }
-          ]"
-        />
+        <q-btn-toggle v-model="filtros.tipo" toggle-color="primary" unelevated rounded dense :options="[
+          { label: 'Todos', value: null },
+          { label: 'Operación', value: 'Operación' },
+          { label: 'Administrativa', value: 'Administrativa' }
+        ]" />
       </div>
 
       <!-- FILTROS ABAJO -->
       <div class="ext-filters__bottom">
-        <q-input
-          v-model="filtros.search"
-          outlined
-          dense
-          debounce="0"
-          placeholder="Buscar por extensión, cliente, usuario, cédula"
-          class="ext-filters__search"
-        >
+        <q-input v-model="filtros.search" outlined dense debounce="0"
+          placeholder="Buscar por extensión, cliente, usuario, cédula" class="ext-filters__search">
           <template #prepend>
             <q-icon name="search" size="18px" />
           </template>
 
           <template #append>
-            <q-icon
-              v-if="filtros.search"
-              name="close"
-              size="16px"
-              class="cursor-pointer"
-              @click="filtros.search = ''"
-            />
+            <q-icon v-if="filtros.search" name="close" size="16px" class="cursor-pointer"
+              @click="filtros.search = ''" />
           </template>
         </q-input>
 
-        <q-select
-          v-model="filtros.estado"
-          :options="['DISPONIBLE', 'CREADA', 'ELIMINADA','DESACTIVADA']"
-          outlined
-          dense
-          clearable
-          placeholder="Estado"
-          class="ext-filters__estado"
-        />
+        <q-select v-model="filtros.estado" :options="['DISPONIBLE', 'CREADA', 'ELIMINADA', 'DESACTIVADA']" outlined dense
+          clearable placeholder="Estado" class="ext-filters__estado" />
       </div>
 
     </div>
 
     <!-- TABLA -->
     <div class="ext-table-wrap">
-      <q-table
-        :rows="extensiones"
-        :columns="columnas"
-        row-key="extension"
-        flat
-        :loading="loading"
-        :pagination="{ rowsPerPage: 10 }"
-        no-data-label="Sin extensiones."
-        class="ext-table"
-      >
+      <q-table :rows="extensiones" :columns="columnas" row-key="extension" flat :loading="loading"
+        :pagination="{ rowsPerPage: 10 }" no-data-label="Sin extensiones." class="ext-table">
         <template #loading>
           <q-inner-loading showing>
             <q-spinner-dots size="40px" color="primary" />
@@ -127,7 +103,8 @@ const {
   loading,
   filtros,
   listar,
-  buscarConDebounce
+  buscarConDebounce,
+  exportar
 } = useExtensiones()
 
 onMounted(() => {
@@ -146,26 +123,26 @@ watch(
 
 // ─── Columnas ─────────────────────────────────────────────────
 const columnas = [
-  { name: 'extension',                  label: 'Extensión',           field: 'extension', align: 'left', sortable: true },
-  { name: 'estado',                     label: 'Estado',              field: 'estado', align: 'left', sortable: true },
-  { name: 'cliente',                    label: 'Cliente',             field: 'cliente', align: 'left', sortable: true },
-  { name: 'direccion',                  label: 'Direccion',           field: 'direccion', align: 'left', sortable: true },
-  { name: 'tipo',                       label: 'Tipo',                field: 'tipo', align: 'left' },
-  { name: 'division',                   label: 'División',            field: 'division', align: 'left' },
-  { name: 'campana',                    label: 'Campaña',             field: 'campana', align: 'left' },
-  { name: 'codigoceco',                 label: 'Cod.Ceco',            field: 'codigoceco', align: 'left' },
-  { name: 'ceco',                       label: 'Ceco',                field: 'ceco', align: 'left' },
-  { name: 'cliente2',                   label: 'Cliente 2',           field: 'cliente2', align: 'left' },
-  { name: 'plataforma',                 label: 'Plataforma',          field: 'plataforma', align: 'left' },
-  { name: 'cedula',                     label: 'Cédula',              field: 'cedula', align: 'left' },
-  { name: 'usuario',                    label: 'Usuario',             field: 'usuario', align: 'left' },
-  { name: 'puesto_trabajo',             label: 'Puesto de trabajo',   field: 'puesto_trabajo', align: 'left' },
-  { name: 'sede',                       label: 'Sede',                field: 'sede', align: 'left' },
-  { name: 'cargo',                      label: 'Cargo',               field: 'cargo', align: 'left' },
-  { name: 'fecha_ultima_modificacion',  label: 'Última modificación', field: 'fecha_ultima_modificacion', align: 'left' },
-  { name: 'ticket_solicitud',           label: 'Ticket solicitud',    field: 'ticket_solicitud', align: 'left' },
-  { name: 'ticket_eliminacion',         label: 'Ticket eliminación',  field: 'ticket_eliminacion', align: 'left' },
-  { name: 'observacion',                label: 'Observación',         field: 'observacion', align: 'left' }
+  { name: 'extension', label: 'Extensión', field: 'extension', align: 'left', sortable: true },
+  { name: 'estado', label: 'Estado', field: 'estado', align: 'left', sortable: true },
+  { name: 'cliente', label: 'Cliente', field: 'cliente', align: 'left', sortable: true },
+  { name: 'direccion', label: 'Direccion', field: 'direccion', align: 'left', sortable: true },
+  { name: 'tipo', label: 'Tipo', field: 'tipo', align: 'left' },
+  { name: 'division', label: 'División', field: 'division', align: 'left' },
+  { name: 'campana', label: 'Campaña', field: 'campana', align: 'left' },
+  { name: 'codigoceco', label: 'Cod.Ceco', field: 'codigoceco', align: 'left' },
+  { name: 'ceco', label: 'Ceco', field: 'ceco', align: 'left' },
+  { name: 'cliente2', label: 'Cliente 2', field: 'cliente2', align: 'left' },
+  { name: 'plataforma', label: 'Plataforma', field: 'plataforma', align: 'left' },
+  { name: 'cedula', label: 'Cédula', field: 'cedula', align: 'left' },
+  { name: 'usuario', label: 'Usuario', field: 'usuario', align: 'left' },
+  { name: 'puesto_trabajo', label: 'Puesto de trabajo', field: 'puesto_trabajo', align: 'left' },
+  { name: 'sede', label: 'Sede', field: 'sede', align: 'left' },
+  { name: 'cargo', label: 'Cargo', field: 'cargo', align: 'left' },
+  { name: 'fecha_ultima_modificacion', label: 'Última modificación', field: 'fecha_ultima_modificacion', align: 'left' },
+  { name: 'ticket_solicitud', label: 'Ticket solicitud', field: 'ticket_solicitud', align: 'left' },
+  { name: 'ticket_eliminacion', label: 'Ticket eliminación', field: 'ticket_eliminacion', align: 'left' },
+  { name: 'observacion', label: 'Observación', field: 'observacion', align: 'left' }
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────
@@ -225,6 +202,7 @@ function formatFecha(val) {
   background: #1c2a45;
   flex-shrink: 0;
 }
+
 .ext-header__eyebrow {
   display: block;
   font-size: 10px;
@@ -234,13 +212,29 @@ function formatFecha(val) {
   color: #6fa3ef;
   margin-bottom: 4px;
 }
-.ext-header__title { margin: 0 0 2px; font-size: 24px; font-weight: 800; color: #fff; }
-.ext-header__sub   { margin: 0; font-size: 13px; color: #7a8faf; }
+
+.ext-header__actions {
+  display: flex;
+  align-items: center;
+}
+
+.ext-header__title {
+  margin: 0 0 2px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.ext-header__sub {
+  margin: 0;
+  font-size: 13px;
+  color: #7a8faf;
+}
 
 .ext-btn--ghost {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   font-weight: 600;
 }
@@ -265,7 +259,7 @@ function formatFecha(val) {
   flex-wrap: wrap;
 }
 
-.ext-filters__search { 
+.ext-filters__search {
   width: 100%;
   max-width: 650px;
 }
@@ -274,7 +268,11 @@ function formatFecha(val) {
   width: 170px;
 }
 
-.ext-table-wrap { flex: 1; padding: 20px 32px 32px; }
+.ext-table-wrap {
+  flex: 1;
+  padding: 20px 32px 32px;
+}
+
 .ext-table {
   border-radius: 12px;
   border: 1px solid #e2e7f0;
@@ -291,13 +289,17 @@ function formatFecha(val) {
   white-space: nowrap;
   border-bottom: 2px solid #e2e7f0;
 }
+
 :deep(.ext-table tbody td) {
   font-size: 13px;
   color: #2c3e60;
   white-space: nowrap;
   border-bottom: 1px solid #f0f2f7;
 }
-:deep(.ext-table tbody tr:hover td) { background: #f5f8ff; }
+
+:deep(.ext-table tbody tr:hover td) {
+  background: #f5f8ff;
+}
 
 .ext-obs {
   display: inline-block;
@@ -316,15 +318,42 @@ function formatFecha(val) {
   letter-spacing: 0.8px;
   text-transform: uppercase;
 }
-.ext-chip--disponible { background: #e6f9f0; color: #1a8a55; }
-.ext-chip--creada     { background: #e8f0fe; color: #1a56c4; }
-.ext-chip--eliminada  { background: #fde8e8; color: #c0392b; }
 
-.ext-error { background: #fff0f0; color: #c0392b; border-left: 3px solid #e74c3c; }
+.ext-chip--disponible {
+  background: #e6f9f0;
+  color: #1a8a55;
+}
+
+.ext-chip--creada {
+  background: #e8f0fe;
+  color: #1a56c4;
+}
+
+.ext-chip--eliminada {
+  background: #fde8e8;
+  color: #c0392b;
+}
+
+.ext-error {
+  background: #fff0f0;
+  color: #c0392b;
+  border-left: 3px solid #e74c3c;
+}
 
 @media (max-width: 600px) {
-  .ext-header    { padding: 20px 16px; flex-direction: column; align-items: flex-start; gap: 10px; }
-  .ext-filters   { padding: 12px 16px; }
-  .ext-table-wrap { padding: 12px 16px; }
+  .ext-header {
+    padding: 20px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ext-filters {
+    padding: 12px 16px;
+  }
+
+  .ext-table-wrap {
+    padding: 12px 16px;
+  }
 }
 </style>

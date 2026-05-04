@@ -18,4 +18,7 @@ export const extensionesService = {
   trasladarModificar(payload) {
     return api.patch('/extensiones/extensiones/trasladar_modificar/', payload)
   },
+  exportar() {
+    return api.get('/extensiones/extensiones/export-excel/', {responseType: 'arraybuffer'})
+  }
 }

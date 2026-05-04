@@ -156,8 +156,8 @@ class ExtensionViewSet(ModelViewSet):
                 ext.id_usuario.usuario if ext.id_usuario else "",
                 ext.id_usuario.cargo if ext.id_usuario else "",
 
-                ext.codigo_ceco or "",
-                ext.ceco or "",
+                ext.id_codigoceco.codigoceco if ext.id_codigoceco else "",
+                ext.id_ceco.ceco if ext.id_ceco else "",
                 ext.puesto_trabajo or "",
 
                 ext.fecha_ultima_modificacion.strftime("%Y-%m-%d %H:%M:%S")

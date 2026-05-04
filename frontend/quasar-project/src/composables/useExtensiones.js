@@ -3,129 +3,151 @@ import { extensionesService } from 'src/services/extensionesService'
 import { notifyError, notifySuccess } from 'src/utils/notify'
 
 export function useExtensiones() {
+  const extensiones = ref([])
+  const loading = ref(false)
 
-    const extensiones = ref([])
-    const loading = ref(false)
+  const filtros = ref({
+    search: '',
+    estado: null,
+    tipo: null,
+  })
 
-    const filtros = ref({
-        search: '',
-        estado: null,
-        tipo: null
-    })
+  let timeout = null
 
-    let timeout = null
+  // LISTAR
+  const listar = async (params = {}) => {
+    loading.value = true
 
-    // LISTAR
-    const listar = async (params = {}) => {
-        loading.value = true
+    try {
+      const { data } = await extensionesService.listar({
+        search: filtros.value.search || null,
+        estado: filtros.value.estado || null,
+        tipo: filtros.value.tipo || null,
+        ...params,
+      })
 
-        try {
-            const { data } = await extensionesService.listar({
-                search: filtros.value.search || null,
-                estado: filtros.value.estado || null,
-                tipo: filtros.value.tipo || null,
-                ...params
-            })
-
-            extensiones.value = Array.isArray(data) ? data : data.results ?? []
-        } catch (e) {
-            notifyError(e)
-        } finally {
-            loading.value = false
-        }
+      extensiones.value = Array.isArray(data) ? data : (data.results ?? [])
+    } catch (e) {
+      notifyError(e)
+    } finally {
+      loading.value = false
     }
+  }
 
-    // DEBOUNCE SEARCH
-    const buscarConDebounce = () => {
-        clearTimeout(timeout)
+  // DEBOUNCE SEARCH
+  const buscarConDebounce = () => {
+    clearTimeout(timeout)
 
-        timeout = setTimeout(() => {
-            listar()
-        }, 400)
+    timeout = setTimeout(() => {
+      listar()
+    }, 400)
+  }
+
+  // ASIGNAR
+  const asignar = async (payload) => {
+    loading.value = true
+
+    try {
+      const { data } = await extensionesService.asignar(payload)
+
+      notifySuccess('Extensión asignada correctamente')
+
+      return data
+    } catch (e) {
+      notifyError(e)
+      throw e
+    } finally {
+      loading.value = false
     }
+  }
 
-    // ASIGNAR
-    const asignar = async (payload) => {
-        loading.value = true
+  // REASIGNAR
+  const reasignar = async (payload) => {
+    loading.value = true
 
-        try {
-            const { data } = await extensionesService.asignar(payload)
+    try {
+      const { data } = await extensionesService.reasignar(payload)
 
-            notifySuccess('Extensión asignada correctamente')
+      notifySuccess('Extensión reasignada correctamente')
 
-            return data
-        } catch (e) {
-            notifyError(e)
-            throw e
-        } finally {
-            loading.value = false
-        }
+      return data
+    } catch (e) {
+      notifyError(e)
+      throw e
+    } finally {
+      loading.value = false
     }
+  }
 
-    // REASIGNAR
-    const reasignar = async (payload) => {
-        loading.value = true
+  // LIBERAR
+  const liberar = async (payload) => {
+    loading.value = true
 
-        try {
-            const { data } = await extensionesService.reasignar(payload)
+    try {
+      const { data } = await extensionesService.liberar(payload)
 
-            notifySuccess('Extensión reasignada correctamente')
+      notifySuccess('Extensión liberada correctamente')
 
-            return data
-        } catch (e) {
-            notifyError(e)
-            throw e
-        } finally {
-            loading.value = false
-        }
+      return data
+    } catch (e) {
+      notifyError(e)
+      throw e
+    } finally {
+      loading.value = false
     }
+  }
 
-    // LIBERAR
-    const liberar = async (payload) => {
-        loading.value = true
+  // TRASLADAR MODIFICANDO
+  const trasladarModificar = async (payload) => {
+    loading.value = true
 
-        try {
-            const { data } = await extensionesService.liberar(payload)
-
-            notifySuccess('Extensión liberada correctamente')
-
-            return data
-        } catch (e) {
-            notifyError(e)
-            throw e
-        } finally {
-            loading.value = false
-        }
+    try {
+      const { data } = await extensionesService.trasladarModificar(payload)
+      notifySuccess('Traslado modificado correctamente')
+      return data
+    } catch (e) {
+      notifyError(e)
+      throw e
+    } finally {
+      loading.value = false
     }
+  }
 
-    // TRASLADAR MODIFICANDO
-    const trasladarModificar = async (payload) => {
-        loading.value = true
+  // EXPORTAR EXCEL
+  const exportar = async () => {
+    try {
+      const response = await extensionesService.exportar()
 
-        try {
-            const { data } = await extensionesService.trasladarModificar(payload)
-            notifySuccess('Traslado modificado correctamente')
-            return data
-        } catch (e) {
-            notifyError(e)
-            throw e
-        } finally {
-            loading.value = false
-        }
+      const blob = new Blob([response.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'extensiones.xlsx'
+
+      document.body.appendChild(link)
+      link.click()
+
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (e) {
+      console.error(e)
+      notifyError(e)
     }
+  }
 
-    return {
-        extensiones,
-        loading,
-        filtros,
-        listar,
-        buscarConDebounce,
-        asignar,
-        reasignar,
-        liberar,
-        trasladarModificar
-    }
-
-
+  return {
+    extensiones,
+    loading,
+    filtros,
+    listar,
+    buscarConDebounce,
+    asignar,
+    reasignar,
+    liberar,
+    trasladarModificar,
+    exportar,
+  }
 }
-
